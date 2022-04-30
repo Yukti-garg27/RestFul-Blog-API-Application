@@ -1,9 +1,13 @@
 package com.springboot.demo.service.impl;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.springboot.demo.entity.Post;
@@ -65,12 +69,20 @@ public class PostServiceImpl implements PostService {
 	}
 	
 	@Override
-	public List<PostDto> getAllPosts() {
+	public List<PostDto> getAllPosts(int pageNo,int pageSize) {
 		// TODO Auto-generated method stub
 		
-		List<Post> allPosts = postRepository.findAll();
+		//create Pageable Instance
 		
-		return allPosts.stream().map(post->mapToDto(post)).collect(Collectors.toList());
+		Pageable pageable=PageRequest.of(pageNo, pageSize);
+		
+		
+		Page<Post> allPosts = postRepository.findAll(pageable);
+		
+		//Get content from page object
+		List<Post> listOfPosts= allPosts.getContent();
+		
+		return listOfPosts.stream().map(post->mapToDto(post)).collect(Collectors.toList());
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.demo.payload.PostDto;
@@ -35,9 +36,11 @@ public class PostController {
 	//To configure HttpResponse, ResponseEntity class is used
     
 	@GetMapping
-	public ResponseEntity<List<PostDto>> getAllPosts(){
+	public ResponseEntity<List<PostDto>> getAllPosts(
+			@RequestParam(name="pageNo", defaultValue="0", required =false) int pageNo,
+			@RequestParam(name="pageSize", defaultValue="10", required =false) int pageSize){
 		return new ResponseEntity(
-				postService.getAllPosts(),HttpStatus.FOUND);
+				postService.getAllPosts(pageNo,pageSize),HttpStatus.FOUND);
 	}
 	
 	@GetMapping("/{id}")
