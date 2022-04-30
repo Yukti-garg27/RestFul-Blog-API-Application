@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.springboot.demo.entity.Post;
 import com.springboot.demo.exception.ResourceNotFoundException;
 import com.springboot.demo.payload.PostDto;
+import com.springboot.demo.payload.PostResponse;
 import com.springboot.demo.repository.PostRepository;
 import com.springboot.demo.service.PostService;
 
@@ -69,7 +70,7 @@ public class PostServiceImpl implements PostService {
 	}
 	
 	@Override
-	public List<PostDto> getAllPosts(int pageNo,int pageSize) {
+	public PostResponse getAllPosts(int pageNo,int pageSize) {
 		// TODO Auto-generated method stub
 		
 		//create Pageable Instance
@@ -82,7 +83,19 @@ public class PostServiceImpl implements PostService {
 		//Get content from page object
 		List<Post> listOfPosts= allPosts.getContent();
 		
-		return listOfPosts.stream().map(post->mapToDto(post)).collect(Collectors.toList());
+		
+		List<PostDto> content= listOfPosts.stream().map(post->mapToDto(post)).collect(Collectors.toList());
+	
+	  PostResponse postResponse=new PostResponse();
+	  postResponse.setContent(content);
+	  postResponse.setPageNo(allPosts.getNumber());
+	  postResponse.setPageSize(allPosts.getSize());
+	  postResponse.setTotalElements(allPosts.getTotalElements());
+	  postResponse.setTotalPages(allPosts.getTotalPages());
+	  postResponse.setLast(allPosts.isLast());
+	  
+	  return postResponse;
+	  
 	}
 
 	@Override

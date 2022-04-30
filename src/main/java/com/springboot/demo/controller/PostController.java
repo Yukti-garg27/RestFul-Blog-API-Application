@@ -1,7 +1,5 @@
 package com.springboot.demo.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.demo.payload.PostDto;
+import com.springboot.demo.payload.PostResponse;
 import com.springboot.demo.service.PostService;
 
 @RestController
@@ -36,7 +35,7 @@ public class PostController {
 	//To configure HttpResponse, ResponseEntity class is used
     
 	@GetMapping
-	public ResponseEntity<List<PostDto>> getAllPosts(
+	public ResponseEntity<PostResponse> getAllPosts(
 			@RequestParam(name="pageNo", defaultValue="0", required =false) int pageNo,
 			@RequestParam(name="pageSize", defaultValue="10", required =false) int pageSize){
 		return new ResponseEntity(
