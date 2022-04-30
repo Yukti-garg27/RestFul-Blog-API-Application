@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.demo.payload.PostDto;
 import com.springboot.demo.payload.PostResponse;
 import com.springboot.demo.service.PostService;
+import com.springboot.demo.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -36,10 +37,10 @@ public class PostController {
     
 	@GetMapping
 	public ResponseEntity<PostResponse> getAllPosts(
-			@RequestParam(name="pageNo", defaultValue="0", required =false) int pageNo,
-			@RequestParam(name="pageSize", defaultValue="10", required =false) int pageSize,
-			@RequestParam(name="sortBy", defaultValue="id", required =false) String sortBy,	
-			@RequestParam(name="sortDir", defaultValue="asc", required =false) String sortDir){
+			@RequestParam(name="pageNo", defaultValue=AppConstants.DEFAULT_PAGE_NUMBER, required =false) int pageNo,
+			@RequestParam(name="pageSize", defaultValue=AppConstants.DEFAULT_PAGE_SIZE, required =false) int pageSize,
+			@RequestParam(name="sortBy", defaultValue=AppConstants.DEFAULT_SORT_BY, required =false) String sortBy,	
+			@RequestParam(name="sortDir", defaultValue=AppConstants.DEFAULT_SORT_DIR, required =false) String sortDir){
 			return new ResponseEntity(
 				postService.getAllPosts(pageNo,pageSize,sortBy,sortDir),HttpStatus.FOUND);
 	}
