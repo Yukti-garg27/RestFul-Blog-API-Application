@@ -2,14 +2,26 @@ package com.springboot.demo.payload;
 
 import java.util.Set;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 public class PostDto {
 
 private Long id;
-	
+
+   //title should not be null or empty
+   //title should have atleast 5 characters
+	@NotEmpty
+	@Size(min=5, message="Post title should have atleast 5 characters")
 	private String title;
-	
-	private String description;
-	
+
+	//Post description should not be null or empty
+	//Post description should have atleast 10 characters
+		@NotEmpty
+		@Size(min=10, message="Post description should have atleast 10 characters")
+		private String description;
+	//Post content should not be empty
+		@NotEmpty
 	private String content;
 	
 	private Set<CommentDto> comment;
