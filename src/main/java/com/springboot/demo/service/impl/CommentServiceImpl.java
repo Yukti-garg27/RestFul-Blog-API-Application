@@ -3,6 +3,7 @@ package com.springboot.demo.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class CommentServiceImpl implements CommentService {
 	private CommentRepository commentRepository;
 	@Autowired
 	private PostRepository postRepository;
+	@Autowired
+	private ModelMapper mapper;
 	
 	@Override
 	public CommentDto createComment(Long postId, CommentDto commentDto) {
@@ -40,20 +43,31 @@ public class CommentServiceImpl implements CommentService {
 	}
 	
 	private Comment mapToEntity(CommentDto commentDto) {
-		Comment comment=new Comment();
+		//Applications consisting of similar but different model, use object mapping make easy 
+		//To convert from one object model to Another
+//		Can use ModelMapper -To do Mapping - Add dependency also
+//		Comment comment=mapper.map(commentDto, Comment.class);
+
+		Comment comment=mapper.map(commentDto, Comment.class);
 		
-		comment.setBody(commentDto.getBody());
-		comment.setEmail(commentDto.getEmail());
-		comment.setName(commentDto.getName());
+//		comment.setBody(commentDto.getBody());
+//		comment.setEmail(commentDto.getEmail());
+//		comment.setName(commentDto.getName());
 		return comment;
 	}
 	
 	private CommentDto mapToDto(Comment comment) {
-		CommentDto commentDto=new CommentDto();
-		commentDto.setId(comment.getId());
-		commentDto.setBody(comment.getBody());
-		commentDto.setEmail(comment.getEmail());
-		commentDto.setName(comment.getName());
+		
+//		Can use ModelMapper -To do Mapping
+//		CommentDto commentDto=mapper.map(comment, CommentDto.class);
+//		
+//		CommentDto commentDto=new CommentDto();
+//		commentDto.setId(comment.getId());
+//		commentDto.setBody(comment.getBody());
+//		commentDto.setEmail(comment.getEmail());
+//		commentDto.setName(comment.getName());
+		
+		CommentDto commentDto=mapper.map(comment, CommentDto.class);
 		return commentDto;
 	}
 
@@ -88,6 +102,44 @@ public class CommentServiceImpl implements CommentService {
 			throw new BlogAPIException(HttpStatus.BAD_REQUEST,"Comment does not belong to post or exist");
 		}
 		return mapToDto(comment);
+	}
+
+	@Override
+	public CommentDto updateCommentById(Long postId, Long commentId, CommentDto commentDto) {
+		Post post= postRepository.findById(postId).orElseThrow(
+				()->new ResourceNotFoundException("Post","id",postId));
+		//retrieve comment by ID
+	Comment	comment=commentRepository.findById(commentId).orElseThrow(
+				()->new ResourceNotFoundException("Comment","id",commentId));
+		
+		if(!comment.getPost().getId().equals(post.getId())) {
+			throw new BlogAPIException(HttpStatus.BAD_REQUEST,"Comment does not belong to post or exist");
+		}
+		
+		comment.setName(commentDto.getName());
+		comment.setBody(commentDto.getBody());
+		comment.setEmail(commentDto.getEmail());
+	
+		Comment updatedComment=commentRepository.save(comment);
+		
+		return mapToDto(updatedComment);
+	}
+
+	@Override
+	public void deleteComment(Long postId, Long commentId) {
+		Post post= postRepository.findById(postId).orElseThrow(
+				()->new ResourceNotFoundException("Post","id",postId));
+		//retrieve comment by ID
+	Comment	comment=commentRepository.findById(commentId).orElseThrow(
+				()->new ResourceNotFoundException("Comment","id",commentId));
+		
+		if(!comment.getPost().getId().equals(post.getId())) {
+			throw new BlogAPIException(HttpStatus.BAD_REQUEST,"Comment does not belong to post or exist");
+		}
+		
+		commentRepository.delete(comment);
+		
+		
 	}
 	
 	

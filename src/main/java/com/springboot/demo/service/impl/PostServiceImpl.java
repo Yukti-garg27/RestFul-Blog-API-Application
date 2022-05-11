@@ -2,6 +2,7 @@ package com.springboot.demo.service.impl;
 
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.springboot.demo.entity.Comment;
 import com.springboot.demo.entity.Post;
 import com.springboot.demo.exception.ResourceNotFoundException;
+import com.springboot.demo.payload.CommentDto;
 import com.springboot.demo.payload.PostDto;
 import com.springboot.demo.payload.PostResponse;
 import com.springboot.demo.repository.PostRepository;
@@ -23,6 +26,7 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	private PostRepository postRepository;
+	
 	
 	@Override
 	public PostDto createPost(PostDto postDto) {
@@ -56,17 +60,43 @@ public class PostServiceImpl implements PostService {
 		post.setTitle(postDto.getTitle());
 		post.setDescription(postDto.getDescription());
 		post.setContent(postDto.getContent());
+		
+		Set<CommentDto> commentDto=postDto.getComment();
+	Set<Comment> newComment=commentDto.stream().map(comm-> mapToEntity(comm)).collect(Collectors.toSet());
+	
+	post.setComments(newComment);
 		return post;
 	}
+	private Comment mapToEntity(CommentDto commentDto) {
 	
+		Comment comment=new Comment();
+		
+		comment.setBody(commentDto.getBody());
+		comment.setEmail(commentDto.getEmail());
+		comment.setName(commentDto.getName());
+		return comment;
+	}
 	//convert entity to dto
-	
+private CommentDto mapToDto(Comment comment) {
+		CommentDto commentDto=new CommentDto();
+		commentDto.setId(comment.getId());
+		commentDto.setBody(comment.getBody());
+		commentDto.setEmail(comment.getEmail());
+		commentDto.setName(comment.getName());
+		
+		return commentDto;
+	}
+
 	public PostDto mapToDto(Post post) {
 		PostDto postResponse =new PostDto();
 		postResponse.setId(post.getId());
 			postResponse.setTitle(post.getTitle());
 			postResponse.setDescription(post.getDescription());
 			postResponse.setContent(post.getContent());
+			Set<Comment> commentDto=post.getComments();
+			Set<CommentDto> newComment=commentDto.stream().map(comm-> mapToDto(comm)).collect(Collectors.toSet());
+			
+			postResponse.setComment(newComment);
 			return postResponse;
 	}
 	

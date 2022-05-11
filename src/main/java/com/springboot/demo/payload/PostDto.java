@@ -1,6 +1,6 @@
 package com.springboot.demo.payload;
 
-import javax.persistence.Column;
+import java.util.Set;
 
 public class PostDto {
 
@@ -11,6 +11,16 @@ private Long id;
 	private String description;
 	
 	private String content;
+	
+	private Set<CommentDto> comment;
+
+	public Set<CommentDto> getComment() {
+		return comment;
+	}
+
+	public void setComment(Set<CommentDto> comment) {
+		this.comment = comment;
+	}
 
 	public Long getId() {
 		return id;
