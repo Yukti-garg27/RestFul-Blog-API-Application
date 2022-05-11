@@ -36,4 +36,16 @@ public class GlobalExceptionHandler {
 		
 	}
 	
+	//Global Exceptions
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorDetails> handleGlobalException(Exception exception, 
+			                          WebRequest request){
+		
+		ErrorDetails details= new ErrorDetails(new Date(), exception.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<>(details, HttpStatus.INTERNAL_SERVER_ERROR);
+		
+	}
+	
+	
 }
