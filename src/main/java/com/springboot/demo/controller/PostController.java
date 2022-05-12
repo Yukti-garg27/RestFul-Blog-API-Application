@@ -60,7 +60,7 @@ public class PostController {
 	public ResponseEntity<PostDto> updatePostById(@Valid @RequestBody PostDto postDto,@PathVariable Long id){
 		return new ResponseEntity(postService.updatePostByID(postDto,id),HttpStatus.OK);
 	}
-	
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deletePostById(@PathVariable Long id){
 		return new ResponseEntity(postService.deletePostByID(id),HttpStatus.OK);

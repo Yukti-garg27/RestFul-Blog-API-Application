@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import com.springboot.demo.security.CustomUserDetailsService;
+
 @Configuration
 @EnableWebSecurity
 //To enable method level security
@@ -22,6 +25,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	//To customise default Security cofiguration, extend WebSecurityConfigurerAdapter
 	
+	@Autowired
+	private CustomUserDetailsService userDetailsService ;
 	/*Basic authentication where a pop-up appears rather than a login page
 	 * to access the page provide credentials
 	 * 
@@ -50,7 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	 */
 	/*
 	 * Provided password in string format. Encode using BcryptPasswordEncoder 
-	 */
+	 
+*
+*
 	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
@@ -62,5 +69,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	return new InMemoryUserDetailsManager(vance,admin);
 	
 	}
+	*/
 
+	//Implement Database authentication
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	}
+	
 }
