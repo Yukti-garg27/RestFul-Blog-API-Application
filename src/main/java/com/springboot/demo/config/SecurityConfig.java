@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		     .csrf().disable()
 		     .authorizeRequests()
 		     .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+		      .antMatchers("*/api/auth/**").permitAll() //Permit all API with api/auth
 		     .anyRequest()
 		     .authenticated().and()
 		     .httpBasic();
@@ -78,4 +80,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 	
+	//For Login/SignIn API
+	//AuthenticationManager Bean
+	
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		// TODO Auto-generated method stub
+		return super.authenticationManagerBean();
+	}
 }
