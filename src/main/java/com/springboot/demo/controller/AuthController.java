@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.demo.entity.Role;
 import com.springboot.demo.entity.User;
+import com.springboot.demo.payload.JWTAuthResponse;
 import com.springboot.demo.payload.LoginDto;
 import com.springboot.demo.payload.SignUpDto;
 import com.springboot.demo.repository.RoleRepository;
 import com.springboot.demo.repository.UserRepository;
+import com.springboot.demo.security.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -43,14 +45,22 @@ public class AuthController {
 	@Autowired
 	private ModelMapper mapper;
 	
-	@PostMapping("/signin")
-	public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
-	Authentication authentication=	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-				loginDto.getUsernameOrEmail(), loginDto.getPassword()));
-	SecurityContextHolder.getContext().setAuthentication(authentication);
-	   return new ResponseEntity<>("User signed-in successfully",HttpStatus.OK);
-	}
-	
+	@Autowired
+    private JwtTokenProvider tokenProvider;
+
+    @PostMapping("/signin")
+    public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LoginDto loginDto){
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // get token form tokenProvider
+        String token = tokenProvider.generateToken(authentication);
+
+        return ResponseEntity.ok(new JWTAuthResponse(token));
+    }
+
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
 	   //add check for username exists in db
@@ -69,11 +79,15 @@ public class AuthController {
 		user.setUsername(signUpDto.getUsername());
 		user.setEmail(signUpDto.getEmail());
 		user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-		/*Role roles =roleRepository.findByName("ROLE_ADMIN").get();
+		/*
+		 * Static Role
+		 * Role roles =roleRepository.findByName("ROLE_ADMIN").get();
 		Create an immutable object with an specific role for newly signup user
 		user.setRoles(Collections.singleton(roles));
 		*/
-		
+		/*
+		 * Dynamic roles added
+		 */
 		Set<Role> newRoles=new HashSet<>();
 		List<String> temp=signUpDto.getRoles();
 		
