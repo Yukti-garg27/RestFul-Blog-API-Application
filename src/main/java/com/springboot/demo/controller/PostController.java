@@ -51,12 +51,12 @@ public class PostController {
 		return new ResponseEntity(postService.getAllPosts(pageNo, pageSize, sortBy, sortDir), HttpStatus.FOUND);
 	}
 
-	@GetMapping("/api/posts/v1/{id}")
+	@GetMapping(value="/api/posts/{id}",params = "version=1")
 	public ResponseEntity<PostDto> getPostByIdV1(@PathVariable Long id) {
 		return new ResponseEntity(postService.getPostById(id), HttpStatus.FOUND);
 	}
 
-	@GetMapping("/api/posts/v2/{id}")
+	@GetMapping(value="/api/posts/{id}",params = "version=2")
 	public ResponseEntity<PostDtoV2> getPostByIdV2(@PathVariable Long id) {
 		PostDto postDto = postService.getPostById(id);
 		PostDtoV2 postDtoV2 = new PostDtoV2();
