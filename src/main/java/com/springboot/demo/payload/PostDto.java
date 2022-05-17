@@ -5,33 +5,42 @@ import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(description = "Post model information")
 public class PostDto {
+	@ApiModelProperty(value = "Blog post id")
+	private long id;
 
-private Long id;
-
-   //title should not be null or empty
-   //title should have atleast 5 characters
+	// title should not be null or empty
+	// title should have at least 2 characters
+	@ApiModelProperty(value = "Blog post title")
 	@NotEmpty
-	@Size(min=5, message="Post title should have atleast 5 characters")
+	@Size(min = 2, message = "Post title should have at least 2 characters")
 	private String title;
 
-	//Post description should not be null or empty
-	//Post description should have atleast 10 characters
-		@NotEmpty
-		@Size(min=10, message="Post description should have atleast 10 characters")
-		private String description;
-	//Post content should not be empty
-		@NotEmpty
+	// post description should be not null or empty
+	// post description should have at least 10 characters
+	@ApiModelProperty(value = "Blog post description")
+	@NotEmpty
+	@Size(min = 10, message = "Post description should have at least 10 characters")
+	private String description;
+
+	// post content should not be null or empty
+	@ApiModelProperty(value = "Blog post conent")
+	@NotEmpty
 	private String content;
-	
-	private Set<CommentDto> comment;
+
+	@ApiModelProperty(value = "Blog post comments")
+	private Set<CommentDto> comments;
 
 	public Set<CommentDto> getComment() {
-		return comment;
+		return comments;
 	}
 
 	public void setComment(Set<CommentDto> comment) {
-		this.comment = comment;
+		this.comments = comment;
 	}
 
 	public Long getId() {
@@ -65,6 +74,5 @@ private Long id;
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
-	
+
 }
