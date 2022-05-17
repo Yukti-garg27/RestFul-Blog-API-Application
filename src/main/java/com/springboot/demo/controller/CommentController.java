@@ -18,7 +18,7 @@ import com.springboot.demo.payload.CommentDto;
 import com.springboot.demo.service.CommentService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class CommentController {
 
 	@Autowired
