@@ -1,2 +1,2 @@
-# Spring-Demo
-Demo Project For Blog Application 
+# Blog Application
+Demo Project For RestFul Blog API Backend Application 
